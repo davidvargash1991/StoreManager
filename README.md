@@ -1,0 +1,2 @@
+# StoreManager
+Inventory web app
