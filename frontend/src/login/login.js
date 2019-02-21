@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Form, FormGroup, Label, 
+import { Button, Form, FormGroup, Label,
          Input, Col, FormFeedback } from 'reactstrap';
 import { Loading } from '../Utilities/components/loading';
 import { login } from '../services/userService';
@@ -17,13 +17,13 @@ class Login extends Component {
       touched: {
         username: false,
         password: false
-    }      
-  };
+      }
+    };
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    
-  }  
+
+  }
 
   validate(username, password) {
 
@@ -39,15 +39,15 @@ class Login extends Component {
         errors.password = 'Last Name should contain at least 8 characters';
 
     return errors;
-}
+  }
 
 
-handleBlur = (field) => (evt) => {
+  handleBlur = (field) => (evt) => {
     this.setState({
       touched: { ...this.state.touched, [field]: true },
       error: ''
     });
-}
+  }
 
   handleInputChange(event) {
     const target = event.target;
@@ -66,28 +66,30 @@ handleBlur = (field) => (evt) => {
       error: ''
     });
     login(this.state.username,this.state.password).then(
-      user => { 
+      user => {
         this.setState({
           loading: false
-        });                
+        });
         this.props.history.push('/');
       },
       error => {
         this.setState({
           loading: false,
           error: error.message
-        });                     
+        });
       }
-  );
+    );
   }
 
   render() {
-    const errors = this.validate(this.state.username, this.state.password);  
+    const errors = this.validate(this.state.username, this.state.password);
+    const isFormValid = errors.username === '' && errors.password === '' &&
+                        this.state.touched.username && this.state.touched.password;
     if (this.state.loading) {
       return (
         <div className="container">
           <div className="row">
-            <div className="Absolute-Center is-Responsive">        
+            <div className="Absolute-Center is-Responsive">
               <Loading />
             </div>
           </div>
@@ -114,20 +116,20 @@ handleBlur = (field) => (evt) => {
                              invalid={errors.username !== ''}
                              onBlur={this.handleBlur('username')}
                              onChange={this.handleInputChange} />
-                      <FormFeedback>{errors.username}</FormFeedback>                           
+                      <FormFeedback>{errors.username}</FormFeedback>
                     </Col>
                   </FormGroup>
                   <FormGroup>
                     <Label htmlFor="password">Password</Label>
                     <Col>
                       <Input type="password" id="password" name="password"
-                             placeholder="Password" 
+                             placeholder="Password"
                              value={this.state.password}
                              valid={errors.password === ''}
                              invalid={errors.password !== ''}
                              onBlur={this.handleBlur('password')}
                              onChange={this.handleInputChange} />
-                      <FormFeedback>{errors.password}</FormFeedback>                             
+                      <FormFeedback>{errors.password}</FormFeedback>
                     </Col>
                   </FormGroup>
                   {
@@ -138,11 +140,11 @@ handleBlur = (field) => (evt) => {
                   }
                   <FormGroup row>
                     <Col md={{size: 10, offset: 1}}>
-                      <Button type="submit" color="primary">
+                      <Button type="submit" color="primary" disabled={!isFormValid}>
                         Login
                       </Button>
                     </Col>
-                  </FormGroup>                            
+                  </FormGroup>
                 </Form>
               </div>
             </div>
