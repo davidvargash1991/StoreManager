@@ -17,21 +17,22 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace StoreManager.Backend.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
+    [ApiController]
     public class UsersController : Controller
     {
         #region <Properties and Variables>
         private IUserService _userService;
         private IMapper _mapper;
         private IHostingEnvironment _hostingEnvironment;
+        private readonly AppSettings _appSettings;
         #endregion
         #region <Constructor>
-        public UsersController(IHostingEnvironment hostingEnvironment, IUserService userService, IMapper mapper)
+        public UsersController(IOptions<AppSettings> appSettings, IUserService userService, IMapper mapper)
         {
             _userService = userService;
             _mapper = mapper;
-            _hostingEnvironment = hostingEnvironment;
+            _appSettings = appSettings.Value;
         }
         #endregion
         #region <Controller Methods>
@@ -45,8 +46,7 @@ namespace StoreManager.Backend.Controllers
                 return BadRequest("Username or password is incorrect");
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            X509Certificate2 cert = new X509Certificate2(_hostingEnvironment + "\\certificate.pfx", "nofate.1991");
-            SecurityKey key = new X509SecurityKey(cert);
+            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
@@ -54,7 +54,7 @@ namespace StoreManager.Backend.Controllers
                     new Claim(ClaimTypes.Name, user.Id.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);

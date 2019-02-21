@@ -70,12 +70,12 @@ handleBlur = (field) => (evt) => {
         this.setState({
           loading: false
         });                
-          this.props.history.push('/');
+        this.props.history.push('/');
       },
       error => {
         this.setState({
           loading: false,
-          error: error
+          error: error.message
         });                     
       }
   );

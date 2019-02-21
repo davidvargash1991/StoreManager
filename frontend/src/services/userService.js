@@ -32,7 +32,9 @@ function handleResponse(response) {
             }
         } else {
             // return error message from response body
-            response.text().then(text => reject(text));
+            var error = new Error('Error ' + response.status + ':' + response.statusText);
+            error.response = response;
+            reject(error && error.message);
         }
     });
 }

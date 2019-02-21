@@ -25,6 +25,7 @@ namespace StoreManager.Business.Services
         #region <Constructor>
         public UserService()
         {
+            createDefaultUser();
         }
         #endregion
         #region <Interface methods>
@@ -150,6 +151,21 @@ namespace StoreManager.Business.Services
             }
 
             return true;
+        }
+        public bool usersIsEmpty()
+        {
+            return _context.Users.Any();
+        }
+        private void createDefaultUser()
+        {
+            if (usersIsEmpty())
+            {
+                User userAdmin = new User();
+                userAdmin.Username = "Admin";
+                userAdmin.FirstName = "Admin";
+                userAdmin.LastName = "Admin";
+                Create(userAdmin, "random.1234");
+            }
         }
         #endregion
     }

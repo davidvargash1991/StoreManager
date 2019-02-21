@@ -17,15 +17,6 @@ namespace StoreManager.Data
             modelBuilder.Entity<User>()
                 .Property(c => c.Id)
                 .UseSqlServerIdentityColumn();
-
-            modelBuilder.Entity<User>()
-                .HasData(new User
-                {
-                    Id = 1,
-                    FirstName = "Admin",
-                    LastName = "Admin",
-                    Username = "Admin"
-                });
         }
 
         public DbSet<User> Users { get; set; }

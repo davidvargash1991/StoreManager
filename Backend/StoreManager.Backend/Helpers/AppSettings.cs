@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 
 namespace StoreManager.Backend.Helpers
 {
-    public class CreateDefaultUser
+    public class AppSettings
     {
+        public string Secret { get; set; }
     }
 }

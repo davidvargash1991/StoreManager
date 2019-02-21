@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using System.Text;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -7,21 +7,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using StoreManager.Backend.Helpers;
 using StoreManager.Business.Services;
 
 namespace StoreManager.Backend
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment env)
+        public Startup()
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath);
-
-            environment = env;
         }
-
-        public IHostingEnvironment environment { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -30,8 +25,9 @@ namespace StoreManager.Backend
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddAutoMapper();
 
-            X509Certificate2 cert = new X509Certificate2(environment.ContentRootPath+"\\certificate.pfx", "nofate.1991");
-            SecurityKey key = new X509SecurityKey(cert);
+            AppSettings appSettings = new AppSettings();
+            appSettings.Secret = JwtSecret.Generate();
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -44,7 +40,7 @@ namespace StoreManager.Backend
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = key,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };
