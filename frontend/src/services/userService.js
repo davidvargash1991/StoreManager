@@ -10,9 +10,7 @@ export function login(username, password) {
     return fetch(api + '/users/authenticate', requestOptions)
         .then(handleResponse, handleError)
         .then(user => {
-            // login successful if there's a jwt token in the response
             if (user && user.token) {
-                // store user details and jwt token in local storage to keep user logged in between page refreshes
                 localStorage.setItem('user', JSON.stringify(user));
             }
 
@@ -23,7 +21,6 @@ export function login(username, password) {
 function handleResponse(response) {
     return new Promise((resolve, reject) => {
         if (response.ok) {
-            // return json if it was returned in the response
             var contentType = response.headers.get("content-type");
             if (contentType && contentType.includes("application/json")) {
                 response.json().then(json => resolve(json));
@@ -31,7 +28,6 @@ function handleResponse(response) {
                 resolve();
             }
         } else {
-            // return error message from response body
             var error = new Error('Error ' + response.status + ':' + response.statusText);
             error.response = response;
             reject(error && error.message);
