@@ -154,7 +154,7 @@ namespace StoreManager.Business.Services
         }
         public bool usersIsEmpty()
         {
-            return _context.Users.Any();
+            return !_context.Users.Any();
         }
         private void createDefaultUser()
         {

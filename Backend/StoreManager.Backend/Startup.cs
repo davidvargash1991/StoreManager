@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Tokens;
 using StoreManager.Backend.Helpers;
 using StoreManager.Business.Services;
@@ -14,9 +15,12 @@ namespace StoreManager.Backend
 {
     public class Startup
     {
-        public Startup()
+        public Startup(IConfiguration configuration)
         {
+            Configuration = configuration;
         }
+
+        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -25,9 +29,15 @@ namespace StoreManager.Backend
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddAutoMapper();
 
-            AppSettings appSettings = new AppSettings();
-            appSettings.Secret = JwtSecret.Generate();
+            var appSettingsSection = Configuration.GetSection("AppSettings");
+            appSettingsSection["Secret"] = JwtSecret.Generate();
+            services.Configure<AppSettings>(appSettingsSection);
+
+            
+
+            var appSettings = appSettingsSection.Get<AppSettings>();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

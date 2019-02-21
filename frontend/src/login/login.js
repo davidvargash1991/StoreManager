@@ -3,6 +3,7 @@ import { Button, Form, FormGroup, Label,
          Input, Col, FormFeedback } from 'reactstrap';
 import { Loading } from '../Utilities/components/loading';
 import { login } from '../services/userService';
+import { withRouter } from 'react-router-dom';
 import './login.css';
 
 class Login extends Component {
@@ -155,4 +156,4 @@ class Login extends Component {
   }
 }
 
-export default Login;
+export default withRouter(Login);
