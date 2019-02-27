@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace StoreManager.Backend.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : Controller
@@ -53,7 +54,7 @@ namespace StoreManager.Backend.Controllers
                 {
                     new Claim(ClaimTypes.Name, user.Id.ToString())
                 }),
-                Expires = DateTime.UtcNow.AddDays(7),
+                Expires = DateTime.UtcNow.AddMinutes(30),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -96,14 +97,6 @@ namespace StoreManager.Backend.Controllers
             return Ok(userDtos);
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetById(int id)
-        {
-            var user = _userService.GetById(id);
-            var userDto = _mapper.Map<UserDto>(user);
-            return Ok(userDto);
-        }
-
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody]UserDto userDto)
         {
@@ -114,7 +107,7 @@ namespace StoreManager.Backend.Controllers
             try
             {
                 // save 
-                _userService.Update(user, userDto.Password);
+                _userService.Update(user, null);
                 return Ok();
             }
             catch (Exception ex)
@@ -122,13 +115,6 @@ namespace StoreManager.Backend.Controllers
                 // return error message if there was an exception
                 return BadRequest(ex.Message);
             }
-        }
-
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
-        {
-            _userService.Delete(id);
-            return Ok();
         }
         #endregion
     }

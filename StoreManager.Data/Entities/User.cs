@@ -32,5 +32,6 @@ namespace StoreManager.Data.Entities
         public int LoginAttempts { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
+        public virtual ICollection<InventoryEventHeader> InventoryEventHeaders { get; set; }
     }
 }

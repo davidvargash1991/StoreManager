@@ -1,6 +1,5 @@
 # Dependency directories
-frontend/node_modules/
-backend/StoreManager.Data/Constants/ConnectionString.cs
+StoreManager.Data/Constants/ConnectionString.cs
 
 ### ASPNETCore ###
 ## Ignore Visual Studio temporary files, build results, and

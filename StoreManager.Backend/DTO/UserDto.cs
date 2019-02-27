@@ -12,5 +12,7 @@ namespace StoreManager.Backend.Dto
         public string LastName { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
+        public bool Active { get; set; }
+        public bool Locked { get; set; }
     }
 }
