@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using AutoMapper;
+using GraphiQl;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,12 +16,12 @@ namespace StoreManager.Backend
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+        public const string GraphQlPath = "/api/graphql";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -79,6 +80,9 @@ namespace StoreManager.Backend
                 .AllowCredentials());
 
             app.UseAuthentication();
+
+            app.UseGraphiQl(GraphQlPath);
+
             app.UseMvc();
         }
     }
